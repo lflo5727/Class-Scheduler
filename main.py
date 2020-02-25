@@ -51,18 +51,17 @@ def random_solution(problem):
         # assign time
         while True:
             temp_tm = random.choice(problem.time_slots)
-            print("Schedule has ")
-            print(len(schedule))
-            print("Current prof is ")
-            print(temp_block.prof)
-            print("Current time is ")
-            print(temp_tm)
             if len(schedule) == 0:
                 temp_block.assign_time(temp_tm)
                 break
+            cnt = 0
             for prior in schedule:
-                print(prior)
-        temp_block.assign_time(random.choice(problem.time_slots))
+                if prior.time == temp_tm and prior.prof == temp_block.prof:
+                    cnt += 1
+            if cnt == 0:
+                temp_block.assign_time(temp_tm)
+                break
+
         schedule.append(temp_block)
         print(str(temp_block))
 
