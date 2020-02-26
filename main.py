@@ -15,11 +15,6 @@ def main():
     problem = Problem()
     problem.load_data()
 
-    temp_max = 1
-    temp_min = 0.0001
-
-    temp_drop = 0.95
-    attempts_to_drop = 400
 
     simulated_annealing(problem)
 
@@ -27,11 +22,65 @@ def main():
 def simulated_annealing(problem):
     random.seed()
 
+    temp_max = 1
+    temp_min = 0.0001
+
+    temp_drop = 0.95
+    attempts_to_drop = 400
+
     inital_state = random_solution(problem)
+    best_state = inital_state
+
+def cost_function(problem, state):
+    cost = 0
+
+    for block in state:
+        # For each course that is taught by an instructor who can teach it, other than Staff: +3
+        if str(block.prof) != "Staff":
+            cost += 3
+        # For each course taught by Staff: +1
+        else:
+            cost += 1
+        # For each course that is the only course scheduled in that room at that time: +5
+        class_time_room = -1
+        for other_block in state:
+            if block.time == other_block.time and block.room == other_block.room:
+                class_time_room += 1
+        cost += ((len(state) - class_time_room) * 5)
+
+        # Room capacity is no more than twice the expected enrollment: +2
+
+
+        # For each course that does not have the same instructor teaching another course at the same time: +5
+        cost += (len(state) - 1)
+
+        # For each schedule that has the same instructor teaching more than 4 courses: -5 per course over 4
+
+        # For each schedule that has Rao or Mitchell (graduate faculty) teaching more courses than Hare or Bingham (same number of courses is OK): -10
+
+        # CS101 and CS 191 should not be scheduled for the same time -15
+        if block.course_name == "101A" or block.course_name == "101B":
+            for other_block in state:
+                if other_block.course_name == "191A" or other_block.course_name == "191B":
+                    if other_block.time == block.time:
+                        cost -= 15
+                    if other_block.time == block.time + 1 or other_block.time == block.time - 1:
+                        cost += 5
+                        if other_block.room.hall == block.room.hall:
+                            cost += 5
+                        if block.room.hall == "Katz" or other_block.room.hall == "Katz":
+                            cost -= 3
+                        if block.room.hall == "Bloch" or other_block.room.hall == "Bloch":
+                            cost -= 3
+        # Adjacent times +5
+        # Adjacent times and same building +5, 1 in Katz -3, 1 in Bloch -3
+        # A and B classes should be >=3 hours apart
+
+
 
 
 def random_solution(problem):
-    print("Call Random Solution")
+    """Generate a random solution to start"""
     schedule = []
     for item in problem.class_list:
         # Create block
@@ -66,10 +115,6 @@ def random_solution(problem):
         print(str(temp_block))
 
     return schedule
-
-
-def cost():
-    pass
 
 
 class ScheduleBlock:
