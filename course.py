@@ -4,4 +4,4 @@ class Course:
         self.capacity = cap
 
     def __str__(self):
-        return "CS {} ({})".format(self.name, self.capacity)
+        return "{}".format(self.name)
