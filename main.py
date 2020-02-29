@@ -93,18 +93,12 @@ def fitness_function(state):
         else:
             cost += 1
         # For each course that is the only course scheduled in that room at that time: +5
-        class_time_room = -1
+        class_time_room = 0
         for other_block in state:
-            if not (block.time == other_block.time and block.room == other_block.room):
-                print("Block")
-                print(block.time)
-                print(block.prof)
-                print("Other Block")
-                print(other_block.time)
-                print(other_block.prof)
-                print(class_time_room)
+            if block.time == other_block.time and block.room == other_block.room:
                 class_time_room += 1
-        cost += ((len(state) - class_time_room) * 5)
+        if class_time_room > 1:
+            cost += 5
 
         # Room capacity is no more than twice the expected enrollment: +2
         if block.course_name.capacity * 2 <= block.room.capacity:
@@ -227,7 +221,6 @@ def random_solution(problem):
                 break
 
         schedule.append(temp_block)
-        print(str(temp_block))
 
     return schedule
 
