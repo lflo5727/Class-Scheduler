@@ -32,7 +32,7 @@ def simulated_annealing(problem):
     # Setup temp variables
     temp = 1.0
     temp_min = 0.0001
-    temp_drop = 0.95
+    temp_drop = 0.98
 
     attempts = 0
     better_attempts = 0
